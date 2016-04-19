@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PATH=".:$PATH"
+PATH=".:$PATH:./conversion"
 
 ifa=$1
 ifb=$2
@@ -18,4 +18,5 @@ fi
 echo "#$ifa" > $ofn
 echo "#$ifb" >> $ofn
 echo "#score,yeslink,nolink,nclink" >> $ofn
-concordance.pl <( conversion/convert_to_gff.py -i $ifa -o /dev/stdout ) <( conversion/convert_to_gff.py -i $ifb -o /dev/stdout ) >> $ofn
+#concordance.pl <( conversion/convert_to_gff.py -i $ifa -o /dev/stdout ) <( conversion/convert_to_gff.py -i $ifb -o /dev/stdout ) >> $ofn
+concordance.pl <( convert_to_gff.py -i $ifa -o /dev/stdout ) <( convert_to_gff.py -i $ifb -o /dev/stdout ) >> $ofn

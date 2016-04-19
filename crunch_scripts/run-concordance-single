@@ -5,7 +5,7 @@ set -eo pipefail
 PRODUCTION=1
 
 if [ "$PRODUCTION" == 0 ] ; then
-  CRUNCH_SRC=`pwd`/..
+  CRUNCH_SRC=`pwd`
 fi
 
 export PATH=$PATH:.:..:$CRUNCH_SRC:$CRUNCH_SRC/crunch_scripts:$CRUNCH_SRC/crunch_scripts/bin:$CRUNCH_SRC/conversion
@@ -29,8 +29,8 @@ if [ "$PRODUCTION" == 1 ] ; then
 
 else
 
-  afile=`ls ../tests/* | head -n1`
-  bfile=`ls ../tests/* | head -n1`
+  afile=`ls ./tests/* | head -n1`
+  bfile=`ls ./tests/* | head -n1`
 
 fi
 
