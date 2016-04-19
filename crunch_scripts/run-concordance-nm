@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-PRODUCTION=0
+PRODUCTION=1
 
 if [ "$PRODUCTION" == 0 ] ; then
   CRUNCH_SRC=`pwd`/..
@@ -23,17 +23,17 @@ n=2
 
 if [ "$PRODUCTION" == 1 ] ; then
 
-mntdir=`arv-dax keep`
-jobparam=`arv-dax script_parameters`
-verbose=`echo "$jobparam" | jq -r '.VERBOSE_FLAG'`
-echo "$jobparam" | jq -r '.SET_A[]' > tmp/seta
-echo "$jobparam" | jq -r '.SET_B[]' > tmp/setb
-n=`echo "$jobparam" | jq -r '.N_PER_CORE'`
+  mntdir=`arv-dax keep`
+  jobparam=`arv-dax script_parameters`
+  verbose=`echo "$jobparam" | jq -r '.VERBOSE_FLAG'`
+  echo "$jobparam" | jq -r '.SET_A[]' > tmp/seta
+  echo "$jobparam" | jq -r '.SET_B[]' > tmp/setb
+  n=`echo "$jobparam" | jq -r '.N_PER_CORE'`
 
 else
 
-  ls ../tests/* > tmp/seta
-  ls ../tests/* > tmp/setb
+  ls ../tests/* | head -n1 > tmp/seta
+  ls ../tests/* | head -n1 > tmp/setb
 
 fi
 
@@ -50,17 +50,15 @@ while read a_fn ; do
 done < tmp/seta
 
 cat tmp/set_ab | tr '\n' '\0' | xargs -0 -n3 --max-procs=$n $CRUNCH_SRC/concordance
-#cat tmp/set_ab | tr '\n' '\0' | xargs -0 -L1 -n3 --max-procs=$n echo ">>"
 
 
 collect-results tmp.concordance
 
-#rm -rf tmp.concordance
-#rm -rf tmp
-
+rm -rf tmp.concordance
+rm -rf tmp
 
 if [ "$PRODUCTION" == 1 ] ; then
-arv-dax task finish
-exit 0
+  arv-dax task finish
 fi
 
+exit 0
