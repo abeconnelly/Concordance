@@ -15,7 +15,6 @@ if [ "$PRODUCTION" == 1 ] ; then
 fi
 
 
-mkdir -p tmp
 mkdir -p pairwise-concordance
 
 mntdir=`pwd`/"../tests"
@@ -26,35 +25,20 @@ if [ "$PRODUCTION" == 1 ] ; then
   mntdir=`arv-dax keep`
   jobparam=`arv-dax script_parameters`
   verbose=`echo "$jobparam" | jq -r '.VERBOSE_FLAG'`
-  echo "$jobparam" | jq -r '.SET_A[]' > tmp/seta
-  echo "$jobparam" | jq -r '.SET_B[]' > tmp/setb
-  n=`echo "$jobparam" | jq -r '.N_PER_CORE'`
+  afile=`echo "$jobparam" | jq -r '.A' `
+  bfile=`echo "$jobparam" | jq -r '.B'`
 
 else
 
-  ls ../tests/* | head -n1 > tmp/seta
-  ls ../tests/* | head -n1 > tmp/setb
+  afile=`ls ../tests/* | head -n1`
+  bfile=`ls ../tests/* | head -n1`
 
 fi
 
-rm -f tmp/set_ab
 
-count=0
-while read a_fn ; do
-  while read b_fn ; do
-    echo "$mntdir/$a_fn" >> tmp/set_ab
-    echo "$mntdir/$b_fn" >> tmp/set_ab
-    echo pairwise-concordance/"$count" >> tmp/set_ab
-    count=`expr $count + 1`
-  done < tmp/setb
-done < tmp/seta
-
-cat tmp/set_ab | tr '\n' '\0' | xargs -0 -n3 --max-procs=$n $CRUNCH_SRC/concordance
-
+$CRUNCH_SRC/concordance "$afile" "$bfile" pairwise-concordance/concordance.csv
 
 collect-results pairwise-concordance
-
-rm -rf tmp
 
 if [ "$PRODUCTION" == 1 ] ; then
   arv-dax task finish

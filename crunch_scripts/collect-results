@@ -4,12 +4,17 @@ import os
 import sys
 import csv
 
+print_header=True
+
 idir=sys.argv[1]
 
 score_matrix = {}
 
 ofp = open("out-concordance.csv", "w")
 csv_writer = csv.writer(ofp)
+
+if print_header:
+  csv_writer.writerow(["#A,B,score,(yeslink/(yeslink+nolink))"])
 
 x_representative = ""
 
@@ -22,7 +27,7 @@ for fn in os.listdir(idir):
 
     score = scores[0]
 
-    score_str = str(score) + "(" + str(scores[1]) + "/(" + str(scores[1]) + "+" + str(scores[2]) + "))"
+    score_str = "(" + str(scores[1]) + "/(" + str(scores[1]) + "+" + str(scores[2]) + "))"
 
     csv_writer.writerow([x, y, score, score_str])
 
