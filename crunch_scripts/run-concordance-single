@@ -17,7 +17,6 @@ fi
 
 mkdir -p pairwise-concordance
 
-mntdir=`pwd`/"../tests"
 n=2
 
 if [ "$PRODUCTION" == 1 ] ; then
@@ -25,8 +24,8 @@ if [ "$PRODUCTION" == 1 ] ; then
   mntdir=`arv-dax keep`
   jobparam=`arv-dax script_parameters`
   verbose=`echo "$jobparam" | jq -r '.VERBOSE_FLAG'`
-  afile=`echo "$jobparam" | jq -r '.A' `
-  bfile=`echo "$jobparam" | jq -r '.B'`
+  afile=$mntdir/`echo "$jobparam" | jq -r '.A' `
+  bfile=$mntdir/`echo "$jobparam" | jq -r '.B'`
 
 else
 
