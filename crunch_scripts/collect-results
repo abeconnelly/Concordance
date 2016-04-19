@@ -1,0 +1,78 @@
+#!/usr/bin/python
+
+import os
+import sys
+import csv
+
+idir=sys.argv[1]
+
+score_matrix = {}
+
+ofp = open("out-concordance.csv", "w")
+csv_writer = csv.writer(ofp)
+
+x_representative = ""
+
+for fn in os.listdir(idir):
+  with open(idir + "/" + fn) as fp:
+    x = fp.readline()[1:].rstrip()
+    y = fp.readline()[1:].rstrip()
+    hdr = fp.readline()
+    scores = fp.readline().rstrip().split(",")
+
+    score = scores[0]
+
+    score_str = str(score) + "(" + str(scores[1]) + "/(" + str(scores[1]) + "+" + str(scores[2]) + "))"
+
+    csv_writer.writerow([x, y, score, score_str])
+
+    if x not in score_matrix:
+      score_matrix[x] = {}
+
+    score_matrix[x][y] = scores
+
+    x_representative = x
+
+    #print x, y,  hdr, scores
+
+ofp.close()
+
+#print score_matrix
+
+out_html = open("out-concordance-report.html", "w")
+out_html.write("<html>\n")
+out_html.write("<table><tbody>\n")
+
+out_html.write("<tr>\n")
+out_html.write("  <th>X \ Y</th>\n")
+for y_key in sorted(score_matrix[x_representative]):
+  out_html.write("  <th>")
+  out_html.write(str(y_key))
+  out_html.write("  </th>")
+out_html.write("</tr>\n")
+
+for x_key in sorted(score_matrix):
+  out_html.write("<tr>\n")
+
+  out_html.write("  <th>")
+  out_html.write(str(x_key))
+  out_html.write("  </th>")
+
+  for y_key in sorted(score_matrix[x_key]):
+    score = float(score_matrix[x_key][y_key][0])
+    redness = ( score - 60 ) * 128 / 40;
+    if redness < 0 : redness = 0
+    redness = int(redness)
+    color = "#ff" + format(255-redness, '02x') + format(255-redness, '02x')
+
+
+    out_html.write("  <td style='background:" + color + "'>")
+
+
+    out_html.write(str(score_matrix[x_key][y_key][0]))
+    out_html.write("  </td>")
+  out_html.write("</tr>\n")
+
+out_html.write("</tbody></table>\n")
+out_html.write("</html>\n")
+out_html.close()

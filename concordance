@@ -1,0 +1,21 @@
+#!/bin/bash
+
+PATH=".:$PATH"
+
+ifa=$1
+ifb=$2
+ofn=$3
+
+if [ "$ifa" == "" ] || [ "$ifb" == "" ] || [ ! -e "$ifa" ] || [ ! -e "$ifb" ] ; then
+  echo "provide input_a and input_b"
+  exit 1
+fi
+
+if [ "$ofn" == "" ] ; then
+  ofn="/dev/stdout"
+fi
+
+echo "#$ifa" > $ofn
+echo "#$ifb" >> $ofn
+echo "#score,yeslink,nolink,nclink" >> $ofn
+concordance.pl <( conversion/convert_to_gff.py -i $ifa -o /dev/stdout ) <( conversion/convert_to_gff.py -i $ifb -o /dev/stdout ) >> $ofn
