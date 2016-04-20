@@ -220,7 +220,7 @@ sub readsnplist {
 
   }
 
-  close STDIN or die "input: $!";
+  #close STDIN or die "input: $!";
   warn "$file: \$#snplist == $#snplist\n" if $ENV{DEBUG};
   return [ sort { $a->[0] cmp $b->[0] || $a->[1] <=> $b->[1] } @snplist ];
 
