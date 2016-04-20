@@ -150,18 +150,19 @@ sub readsnplist {
 
   my $file = shift;
   $file =~ s/:.*//;
-  if ( $file =~ /^[0-9a-f]{32}/ && !-e $file ) {
-    warn "$file: gzip -cdf\n" if $ENV{DEBUG};
-    #open STDIN, "-|", "gzip -cdf $file"
-    open FH, "-|", "gzip -cdf $file"
-      or die "gzip -cdf: $!";
-  }
-
-  else {
+#  if ( $file =~ /^[0-9a-f]{32}/ && !-e $file ) {
+#    warn "$file: gzip -cdf\n" if $ENV{DEBUG};
+#    #open STDIN, "-|", "gzip -cdf $file"
+#    #open FH, "-|", "gzip -cdf $file" or die "gzip -cdf: $!";
+#    open FH, $file or die "$file: $!";
+#  }
+#
+#  else {
     warn "$file: open\n" if $ENV{DEBUG};
     #open STDIN, "-|", "gzip", "-cdf", $file or die "$file: $!";
-    open FH, "-|", "gzip", "-cdf", $file or die "$file: $!";
-  }
+    #open FH, "-|", "gzip", "-cdf", $file or die "$file: $!";
+    open FH, $file or die "$file: $!";
+#  }
 
   my @snplist;
   #while (<STDIN>) {
