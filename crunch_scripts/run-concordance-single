@@ -8,6 +8,7 @@
 set -eo pipefail
 
 PRODUCTION=1
+VERBOSE=1
 
 if [ "$PRODUCTION" == 0 ] ; then
   CRUNCH_SRC=`pwd`
@@ -22,8 +23,6 @@ fi
 
 mkdir -p pairwise-concordance
 
-n=2
-
 if [ "$PRODUCTION" == 1 ] ; then
 
   mntdir=`arv-dax keep`
@@ -37,6 +36,14 @@ else
   afile=`ls ./tests/* | head -n1`
   bfile=`ls ./tests/* | head -n1`
 
+fi
+
+if [ "$VERBOSE" == 1 ] ; then
+  echo "PATH >>>>>>>>>>>> $PATH"
+  echo "afile >>>>>>>>>>>>>>>>> $afile"
+  echo "bfile >>>>>>>>>>>>>>>>> $bfile"
+  echo `ls $CRUNCH_SRC/concordance`
+  echo `ls -lad pairwise-concordance`
 fi
 
 
