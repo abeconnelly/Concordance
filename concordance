@@ -20,4 +20,15 @@ echo "#$ifb" >> $ofn
 echo "#score,yeslink,nolink,nclink" >> $ofn
 #concordance.pl <( conversion/convert_to_gff.py -i $ifa -o /dev/stdout ) <( conversion/convert_to_gff.py -i $ifb -o /dev/stdout ) >> $ofn
 #concordance.pl <( convert_to_gff.py -i $ifa -o /dev/stdout ) <( convert_to_gff.py -i $ifb -o /dev/stdout ) >> $ofn
+
+##### DEBUG
+echo "DEBUG ifa: $ifa >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+head <( convert_to_gff.py -i $ifa )
+
+echo "DEBUG ifb: $ifb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+head <( convert_to_gff.py -i $ifb )
+##### DEBUG
+
+
+
 concordance.pl <( convert_to_gff.py -i $ifa ) <( convert_to_gff.py -i $ifb ) >> $ofn
