@@ -44,6 +44,11 @@ if [ "$VERBOSE" == 1 ] ; then
   echo "bfile >>>>>>>>>>>>>>>>> $bfile"
   echo `ls $CRUNCH_SRC/concordance`
   echo `ls -lad pairwise-concordance`
+  echo "head $afile ***********************"
+  echo `head $afile`
+  echo "head <( bzcat $bfile ) *******************"
+  echo `head <( bzcat $bfile )`
+
 fi
 
 
