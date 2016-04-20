@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# Crunch script to run concordance on a single pair
+# of samples.
+#
+
 
 set -eo pipefail
 
