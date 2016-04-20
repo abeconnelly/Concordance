@@ -31,4 +31,5 @@ head <( convert_to_gff.py -i $ifb )
 
 
 
-concordance.pl <( convert_to_gff.py -i $ifa ) <( convert_to_gff.py -i $ifb ) >> $ofn
+concordance.pl <( convert_to_gff.py -i $ifa ) <( convert_to_gff.py -i $ifb ) >> $ofn 3<&0 0< /dev/null
+
