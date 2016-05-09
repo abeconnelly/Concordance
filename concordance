@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+set -o pipefail
+
 PATH=".:$PATH:./conversion"
 
 ifa=$1
@@ -14,6 +17,8 @@ fi
 if [ "$ofn" == "" ] ; then
   ofn="/dev/stdout"
 fi
+
+trap "echo ERROR" ERR
 
 echo "#$ifa" > $ofn
 echo "#$ifb" >> $ofn

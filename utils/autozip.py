@@ -2,7 +2,24 @@ import re
 import sys
 import zipfile
 import os
+import os.path
 import bz2
+
+
+def arraypath(fn):
+    a = []
+    h,t = os.path.split(fn)
+    a.append(t)
+    while h and h!="/":
+        h,t = os.path.split(h)
+        a.append(t)
+        #if h == "/" and t == "": break
+    if h=="/":
+        a.append(h)
+    a.reverse()
+    return a
+
+
 
 def file_open(filename, mode='r', arch_file=''):
     """Return file obj, with compression if appropriate extension is given
@@ -24,7 +41,11 @@ def file_open(filename, mode='r', arch_file=''):
                                'Upgrade python to 2.6 (or later) to ' +
                                'work with zip-compressed files!')
         if mode == 'r':
-            files = archive.infolist()
+
+            # explicitely exclude __MACOSX cruft
+            #
+            files = [ x for x in archive.infolist() if arraypath(x.filename)[0] != "__MACOSX" ]
+
             if not arch_file:
                 assert len(files) == 1, \
                     'More than one file in ZIP archive, no filename provided.'

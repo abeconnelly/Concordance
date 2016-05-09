@@ -2,8 +2,6 @@
 
 use strict;
 
-#close STDIN;
-
 my $print_header=0;
 
 my $knob_x = ($ARGV[0] || die "provide knob_x");
@@ -23,24 +21,16 @@ if ($print_header) {
   print "#score,yeslink,nolink,nclink\n";
 }
 
-#print "<TABLE>";
 my @xlists;
 
-#print "<TR><TH></TH>\n";
 for my $xfile (@x) {
-  #printf "<TH><code>%8.8s</code></TH>\n", unique_part( $xfile, @x );
   push @xlists, &readsnplist($xfile);
 }
 
-#print( "<!--\n", ( map { "x $_\n" } @x ), ( map { "y $_\n" } @y ), "-->\n" );
 my @xhash = map { readlink($_) =~ /([0-9a-f]{32})/ || /([0-9a-f]{32})/ } @x;
 my @yhash = map { readlink($_) =~ /([0-9a-f]{32})/ || /([0-9a-f]{32})/ } @y;
-#my @snpcounts;
 
-#print "</TR>\n";
 for my $yfile (@y) {
-
-  #printf "<TR><TH><CODE>%8.8s</CODE></TH>\n", unique_part( $yfile, @y );
 
   my $ylist_orig = &readsnplist($yfile);
   my $yhash      = shift @yhash;
@@ -106,10 +96,6 @@ for my $yfile (@y) {
     my $star    = $score > $xhighscore * .9;
     my $redness = ( $score - 60 ) * 128 / 40;
     $redness = 0 if $redness < 0;
-    #my $color = sprintf( "#ff%02x%02x", 255 - $redness, 255 - $redness );
-
-    #printf "<TD style=\"background: $color\">%.0f%s</TD>", $xscore[$xi]->[0],
-    #  $star ? "*" : "";
 
     printf "%.0f", $xscore[$xi]->[0];
 
@@ -124,8 +110,6 @@ for my $yfile (@y) {
       my $yeslink = snpdig_link( "$yhash;agree-$xhash",       $yes );
       my $nolink  = snpdig_link( "$yhash;disagree-$xhash",    $no );
       my $nclink  = snpdig_link( "nocall-$yhash;call-$xhash", $nocally );
-      #push @snpcounts, qq{<TR><TH>$label</TH><TD>$yeslink</TD><TD>$nolink</TD><TD>$nclink</TD></TR>\n};
-      #push @snpcounts, qq{<!-- $yhash $xhash $yes $no $nocally -->\n};
 
       print ",$yeslink,$nolink,$nclink";
     } else {
@@ -136,13 +120,7 @@ for my $yfile (@y) {
 
   }
 
-  #print "</TR>\n";
-
 }
-
-#print "</TABLE>\n";
-#unshift @snpcounts, qq{<TR><TD><u>high scoring pair (y/x)</u></TD><TD><u>concordant</u></TD><TD><u>discordant</u></TD><TD><u>nocall_y:call_x</u></TD></TR>\n};
-#print "<TABLE>", @snpcounts, "</TABLE>";
 
 close STDOUT or die "writer exited $?";
 
@@ -150,27 +128,18 @@ sub readsnplist {
 
   my $file = shift;
   $file =~ s/:.*//;
-#  if ( $file =~ /^[0-9a-f]{32}/ && !-e $file ) {
-#    warn "$file: gzip -cdf\n" if $ENV{DEBUG};
-#    #open STDIN, "-|", "gzip -cdf $file"
-#    #open FH, "-|", "gzip -cdf $file" or die "gzip -cdf: $!";
-#    open FH, $file or die "$file: $!";
-#  }
-#
-#  else {
-    warn "$file: open\n" if $ENV{DEBUG};
-    #open STDIN, "-|", "gzip", "-cdf", $file or die "$file: $!";
-    #open FH, "-|", "gzip", "-cdf", $file or die "$file: $!";
-    open FH, $file or die "$file: $!";
-#  }
+  warn "$file: open\n" if $ENV{DEBUG};
+  open FH, $file or die "$file: $!";
 
   my @snplist;
-  #while (<STDIN>) {
+
+  my $has_data = 0;
+
   while (<FH>) {
-
     chomp;
-
     my @fields = split( /\t/, $_, 9 );
+
+    $has_data = 1;
 
     ## VCF?
     ##
@@ -224,11 +193,11 @@ sub readsnplist {
 
   }
 
-  #close STDIN or die "input: $!";
+  if (!$has_data) { die "no data read"; }
+
   close FH or die "input: $!";
   warn "$file: \$#snplist == $#snplist\n" if $ENV{DEBUG};
   return [ sort { $a->[0] cmp $b->[0] || $a->[1] <=> $b->[1] } @snplist ];
-
 }
 
 # XACMGRSVTWYHKDBN
