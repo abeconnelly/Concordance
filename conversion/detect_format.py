@@ -20,8 +20,8 @@ del GETEV_MAIN_PATH
 from utils import autozip
 
 MAX_LINES_CHECKED = 100
-#VERBOSE=False
-VERBOSE=True
+VERBOSE=False
+#VERBOSE=True
 
 def detect_format(file_input):
     """Detect the genetic data format of a file.
@@ -33,6 +33,7 @@ def detect_format(file_input):
       deCODEme: deCODEme (microarray genotyping)
       GFF: General Feature Format
       VCF: Variant Call Format (only tested for 23andme exome data)
+      ANCESTRY: Ancestry (genotyping data)
     """
     looks_like = dict()
     if isinstance(file_input, str):
@@ -67,6 +68,8 @@ def detect_format(file_input):
             if re.match(r'##fileformat=VCFv4', line):
                 if VERBOSE: print "Variant Call Format (VCF) detected"
                 looks_like['VCF'] = True
+            if re.match(r'#\s*AncestryDNA', line):
+                if VERBOSE: print "Ancestry genotyping data (ANCESTRY) detected"
 
         # Look at other lines and decide based on their format.
         tsv_data = line.split('\t')
@@ -92,6 +95,13 @@ def detect_format(file_input):
              re.match(r'[ACGT][ACGT]', tsv_data[3]) ):
             if VERBOSE: print "23andme microarray genotyping data (23ANDME) guessed"
             looks_like['23ANDME'] = True
+        if ( len(tsv_data) > 4 and
+             re.match(r'rs', tsv_data[0]) and
+             re.match(r'[0-9]', tsv_data[2]) and
+             re.match(r'[ACGT0-9]', tsv_data[3]) and
+             re.match(r'[ACGT0-9]', tsv_data[4]) ):
+            if VERBOSE: print "Ancestry genotyping data (ANCESTRY) guessed"
+            looks_like['ANCESTRY'] = True
         if ( len(tsv_data) > 6 and
              re.match(r'chr', tsv_data[3]) and
              re.match(r'[0-9]', tsv_data[4]) and

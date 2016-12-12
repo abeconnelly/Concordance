@@ -10,6 +10,7 @@ import gff_from_23andme
 import gff_from_decodeme
 import gff_from_ftdna
 import vcf_to_gff
+import gff_from_ancestry
 
 # A bit of path manipulation to import autozip.py from ../utils/
 GETEV_MAIN_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -34,6 +35,8 @@ def convert(input_file, options=None):
         input_data = gff_from_decodeme.convert(input_file)
     elif input_type == 'FTDNA':
         input_data = gff_from_ftdna.convert(input_file)
+    elif input_type == 'ANCESTRY':
+        input_data = gff_from_ancestry.convert(input_file)
     else:
         raise Exception("input format not recognized" + str(input_file))
 
